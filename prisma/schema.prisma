@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AppRole {
+  admin
+  moderator
+  user
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  roles     UserRole[]
+
+  @@map("users")
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  role      AppRole
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role])
+  @@map("user_roles")
+}
+
+model Project {
+  id            String   @id @default(uuid())
+  title         String
+  titleEn       String?  @map("title_en")
+  category      String
+  client        String?
+  description   String?
+  descriptionEn String?  @map("description_en")
+  software      String[] @default([])
+  thumbnailUrl  String?  @map("thumbnail_url")
+  videoUrl      String?  @map("video_url")
+  featured      Boolean  @default(false)
+  displayOrder  Int      @default(0) @map("display_order")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
+}
+
+model Experience {
+  id                String   @id @default(uuid())
+  company           String
+  companyEn         String?  @map("company_en")
+  role              String
+  roleEn            String?  @map("role_en")
+  period            String
+  responsibilities  String[] @default([])
+  responsibilitiesEn String[] @default([]) @map("responsibilities_en")
+  technologies      String[] @default([])
+  displayOrder      Int      @default(0) @map("display_order")
+  isActive          Boolean  @default(true) @map("is_active")
+  isCurrent         Boolean  @default(false) @map("is_current")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("experiences")
+}
+
+model Certification {
+  id            String   @id @default(uuid())
+  title         String
+  titleEn       String?  @map("title_en")
+  issuer        String
+  issueDate     String?  @map("issue_date")
+  credentialId  String?  @map("credential_id")
+  credentialUrl String?  @map("credential_url")
+  displayOrder  Int      @default(0) @map("display_order")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("certifications")
+}
+
+model ContactMessage {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  projectType String?  @map("project_type")
+  message     String
+  isRead      Boolean  @default(false) @map("is_read")
+  isArchived  Boolean  @default(false) @map("is_archived")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("contact_messages")
+}
+
+model SiteSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     Json?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}

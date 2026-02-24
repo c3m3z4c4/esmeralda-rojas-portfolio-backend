@@ -11,6 +11,7 @@ import certificationsRoutes from './routes/certifications';
 import contactRoutes from './routes/contact';
 import settingsRoutes from './routes/settings';
 import uploadRoutes from './routes/upload';
+import servicesRoutes from './routes/services';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use('/api/certifications', certificationsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/services', servicesRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
